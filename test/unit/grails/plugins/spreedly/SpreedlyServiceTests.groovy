@@ -36,4 +36,9 @@ spreedly.authToken = '7970a60046d945f520fc9be915b71c86c7de4560'
         def plan = service.findSubscriptionPlanByName('Example Plan')
         assertNotNull plan
     }
+
+    void testDeleteAllSubscribers() {
+        def service = new SpreedlyService()
+        assertTrue service.deleteAllSubscribers()
+    }
 }

@@ -2,6 +2,7 @@ package grails.plugins.spreedly
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import groovyx.net.http.RESTClient
+import static groovyx.net.http.ContentType.TEXT
 
 class SpreedlyService {
 
@@ -22,8 +23,16 @@ class SpreedlyService {
 
     }
 
-    def deleteAllSubscribers() {
-        
+    boolean deleteAllSubscribers() {
+        def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
+        http.auth.basic authToken, ''
+        http.handler.failure = { resp ->
+            def msg = "Error calling spreedly : ${resp.statusLine}"
+            log.error(msg)
+            throw new Exception(msg)
+        }
+        def resp = http.delete(path:'subscribers.xml', contentType:TEXT)
+        return resp.status == 200
     }
 
     /*
@@ -58,13 +67,13 @@ class SpreedlyService {
     */
     def findAllSubscriptionPlans() {
         def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
-        http.auth.basic(authToken, '')
+        http.auth.basic authToken, ''
         http.handler.failure = { resp ->
-            def msg = "Error calling findAllSubscriptionPlans : ${resp.statusLine}"
+            def msg = "Error calling spreedly : ${resp.statusLine}"
             log.error(msg)
             throw new Exception(msg)
         }
-        def resp = http.get (path:'subscription_plans.xml')
+        def resp = http.get(path:'subscription_plans.xml')
         resp.data."subscription-plan"
     }
 
