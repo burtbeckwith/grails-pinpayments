@@ -75,7 +75,8 @@ class SpreedlyService {
     }
 
     def findSubscriptionPlanByName(String name) {
-        
+        def plans = findAllSubscriptionPlans()
+        plans.find { it.name.text() == name }
     }
 
     def giveComplementarySubscription(Long customerId, String quantity, String units) {
