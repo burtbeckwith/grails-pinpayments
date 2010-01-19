@@ -1,7 +1,7 @@
 package grails.plugins.spreedly
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-import groovyx.net.http.HTTPBuilder
+import groovyx.net.http.RESTClient
 
 class SpreedlyService {
 
@@ -57,16 +57,15 @@ class SpreedlyService {
 </subscription-plans>
     */
     def findAllSubscriptionPlans() {
-        def http = new HTTPBuilder("https://spreedly.com/api/v4/${siteName}/")
+        def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
         http.auth.basic(authToken, '')
         http.handler.failure = { resp ->
             def msg = "Error calling findAllSubscriptionPlans : ${resp.statusLine}"
             log.error(msg)
             throw new Exception(msg)
         }
-        http.get (path:'subscription_plans.xml') { resp, xml ->
-            xml."subscription-plan"
-        }
+        def resp = http.get (path:'subscription_plans.xml')
+        resp.data."subscription-plan"
     }
 
     def findSubscriptionPlan(Long subscriptionId) {
