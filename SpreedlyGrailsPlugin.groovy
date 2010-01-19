@@ -1,4 +1,4 @@
-class GrailsSpreedlyGrailsPlugin {
+class SpreedlyGrailsPlugin {
     // the plugin version
     def version = "0.1-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
@@ -11,15 +11,19 @@ class GrailsSpreedlyGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def author = "Luis Arias"
+    def authorEmail = "luis@balsamiq.com"
+    def title = "Spreedly payment service integration for Grails."
     def description = '''\\
-Brief description of the plugin.
+The Grails Spreedly plugin provides an easy way to access the Spreedly v4 API.class
+
+More information on the Spreedly payment service can be found on:
+
+http://www.spreedly.com
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/grails-spreedly"
+    def documentation = "http://grails.org/plugin/spreedly"
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before 
