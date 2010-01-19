@@ -70,7 +70,8 @@ class SpreedlyService {
     }
 
     def findSubscriptionPlan(Long subscriptionId) {
-        
+        def plans = findAllSubscriptionPlans()
+        plans.find { it.id.text().toLong() == subscriptionId }
     }
 
     def findSubscriptionPlanByName(String name) {
