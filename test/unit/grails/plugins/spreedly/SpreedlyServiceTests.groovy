@@ -161,6 +161,20 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertNotNull invoice
     }
 
+    void testPayInvoice() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        assertNotNull subscriber
+        def invoice = service.createInvoice(3765, customerId)
+        assertNotNull invoice
+        def token = invoice.token.text()
+        invoice = service.payInvoice(token, '4222222222222', 'visa', '123', '01', '2011', 'Roger', 'Rabbit')
+        assertNotNull invoice
+        assertEquals token, invoice.token.text()
+        assertTrue invoice.closed.text().toBoolean()
+    }
+
 //
 //    void testGiveComplimentaryTimeExtension() {
 //        def service = new SpreedlyService()

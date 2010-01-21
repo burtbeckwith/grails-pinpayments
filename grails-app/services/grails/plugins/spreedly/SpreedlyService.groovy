@@ -164,7 +164,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : null
+        resp.status == 201 ? resp.data : null
     }
 
     /**
@@ -191,7 +191,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : null
+        resp.status == 201 ? resp.data : null
     }
 
     /**
@@ -214,7 +214,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : null
+        resp.status == 201 ? resp.data : null
     }
 
     /**
@@ -249,7 +249,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : null
+        resp.status == 200 ? resp.data : null
     }
 
     /**
@@ -284,13 +284,41 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : null
+        resp.status == 201 ? resp.data : null
     }
 
     /**
     *   Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
     */
-    def payInvoice() {
-
+    def payInvoice(String invoiceToken, String cardNumber, String cardType, String verificationValue,
+        String _month, String _year, String firstName, String lastName) {
+        def http = getRESTClient()
+        http.handler.'403' = {
+            throw new Exception("Subscription plan is disabled")
+        }
+        http.handler.'404' = {
+            throw new Exception("Unknown subscription plan")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
+        def resp = http.put(
+            path:"invoices/${invoiceToken}/pay.xml",
+            requestContentType:XML,
+            body: {
+                payment {
+                    credit_card {
+                        number cardNumber
+                        card_type cardType
+                        verification_value verificationValue
+                        month _month
+                        year _year
+                        first_name firstName
+                        last_name lastName
+                    }
+                }
+            }
+        )
+        resp.status == 200 ? resp.data : null
     }
 }
