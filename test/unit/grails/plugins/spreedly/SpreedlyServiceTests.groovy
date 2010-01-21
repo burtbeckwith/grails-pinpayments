@@ -14,6 +14,11 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 ''')
     }
 
+    void tearDown() {
+        def service = new SpreedlyService()
+        service.deleteAllSubscribers()
+    }
+
     void testConfigOk() {
         def service = new SpreedlyService()
         assertNotNull service.siteName
@@ -68,7 +73,6 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         def subscriber = service.createSubscriber(customerId)
         assertNotNull subscriber
         assertEquals customerId, subscriber.'customer-id'.text().toLong()
-        service.deleteAllSubscribers()
     }
 
     void testDeleteSubscriber() {
@@ -81,7 +85,6 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
     void testFindAllSubscribers() {
         def service = new SpreedlyService()
         long customerId = new Date().time
-        service.deleteAllSubscribers()
         service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
         service.createSubscriber(customerId + 1, 'danny@rabbit.com', 'danny')
         def subscribers = service.findAllSubscribers()
@@ -97,10 +100,9 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertNotNull subscriber
         assertEquals 'roger@rabbit.com', subscriber.email.text()
         assertEquals 'roger', subscriber.'screen-name'.text()
-        service.deleteAllSubscribers()
     }
 
-    void testGiveComplementarySubscription() {
+    void testGiveComplimentarySubscription() {
         def service = new SpreedlyService()
         long customerId = new Date().time
         def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
@@ -109,4 +111,22 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertNotNull subscriber
         assertTrue subscriber.active.text().toBoolean()
     }
+
+    void testUpdateSubscriber() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def _subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        assertFalse _subscriber.active.text().toBoolean()
+        assertTrue service.updateSubscriber(customerId, ['screen-name':'joe'])
+    }
+
+//    void testGiveComplimentaryTimeExtension() {
+//        def service = new SpreedlyService()
+//        long customerId = new Date().time
+//        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+//        assertFalse subscriber.active.text().toBoolean()
+//        subscriber = service.giveComplimentaryTimeExtension(customerId, 20, 'days')
+//        assertNotNull subscriber
+//        assertTrue subscriber.active.text().toBoolean()
+//    }
 }
