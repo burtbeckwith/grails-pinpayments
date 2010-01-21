@@ -3,6 +3,7 @@ package grails.plugins.spreedly
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import groovyx.net.http.RESTClient
 import static groovyx.net.http.ContentType.TEXT
+import static groovyx.net.http.ContentType.XML
 
 class SpreedlyService {
 
@@ -11,8 +12,35 @@ class SpreedlyService {
     String siteName = CH.config.spreedly.siteName
     String authToken = CH.config.spreedly.authToken
 
-    def createSubscriber(Long customerId, String email = '', String screenName = '') {
+    RESTClient getRESTClient() {
+        def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
+        http.auth.basic authToken, ''
+        http.handler.failure = { resp ->
+            def msg = "Error calling spreedly : ${resp.statusLine}"
+            log.error(msg)
+            throw new Exception(msg)
+        }
+        http
+    }
 
+    def createSubscriber(Long customerId, String email = '', String screenName = '') {
+        def http = getRESTClient()
+        def resp = http.post(
+            path:'subscribers.xml',
+            requestContentType:XML,
+            body: {
+                subscriber {
+                    'customer-id' customerId
+                    if (screenName) {
+                        'screen-name' screenName
+                    }
+                    if (email) {
+                        'email' email
+                    }
+                }
+            }
+        )
+        resp.data
     }
 
     def deleteSubscriber(Long customerId) {
@@ -24,13 +52,7 @@ class SpreedlyService {
     }
 
     boolean deleteAllSubscribers() {
-        def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
-        http.auth.basic authToken, ''
-        http.handler.failure = { resp ->
-            def msg = "Error calling spreedly : ${resp.statusLine}"
-            log.error(msg)
-            throw new Exception(msg)
-        }
+        def http = getRESTClient()
         def resp = http.delete(path:'subscribers.xml', contentType:TEXT)
         return resp.status == 200
     }
@@ -66,13 +88,7 @@ class SpreedlyService {
 </subscription-plans>
     */
     def findAllSubscriptionPlans() {
-        def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
-        http.auth.basic authToken, ''
-        http.handler.failure = { resp ->
-            def msg = "Error calling spreedly : ${resp.statusLine}"
-            log.error(msg)
-            throw new Exception(msg)
-        }
+        def http = getRESTClient()
         def resp = http.get(path:'subscription_plans.xml')
         resp.data."subscription-plan"
     }
