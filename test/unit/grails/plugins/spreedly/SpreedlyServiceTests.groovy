@@ -153,6 +153,14 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertEquals 'Unknown subscriber', result
     }
 
+    void testCreateInvoice() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        def invoice = service.createInvoice(3765, customerId)
+        assertNotNull invoice
+    }
+
 //
 //    void testGiveComplimentaryTimeExtension() {
 //        def service = new SpreedlyService()

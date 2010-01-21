@@ -164,7 +164,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : ''
+        resp.status ? resp.data : null
     }
 
     /**
@@ -191,7 +191,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : ''
+        resp.status ? resp.data : null
     }
 
     /**
@@ -214,7 +214,7 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : ''
+        resp.status ? resp.data : null
     }
 
     /**
@@ -249,6 +249,48 @@ class SpreedlyService {
                 }
             }
         )
-        resp.status ? resp.data : ''
+        resp.status ? resp.data : null
+    }
+
+    /**
+    *   Reference : http://spreedly.com/manual/integration-reference/payments-api/create-invoice/
+    */
+    def createInvoice(long subscriptionId, long customerId, String screenName = '', String _email = '') {
+        def http = getRESTClient()
+        http.handler.'403' = {
+            throw new Exception("Subscription plan is disabled")
+        }
+        http.handler.'404' = {
+            throw new Exception("Unknown subscription plan")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
+        def resp = http.post(
+            path:"invoices.xml",
+            requestContentType:XML,
+            body: {
+                invoice {
+                    subscription_plan_id subscriptionId
+                    subscriber {
+                        customer_id customerId
+                        if (screenName) {
+                            screen_name screenName
+                        }
+                        if (_email) {
+                            email _email
+                        }
+                    }
+                }
+            }
+        )
+        resp.status ? resp.data : null
+    }
+
+    /**
+    *   Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
+    */
+    def payInvoice() {
+
     }
 }
