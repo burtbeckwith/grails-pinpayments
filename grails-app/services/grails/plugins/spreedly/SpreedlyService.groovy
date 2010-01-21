@@ -229,11 +229,15 @@ class SpreedlyService {
         }
     }
 
-    def stopAutoRenew(long customerId) {
-
+    /**
+    * Reference : http://spreedly.com/manual/integration-reference/programatically-stop-auto-renew/
+    */
+    boolean stopAutoRenew(long customerId) {
+        def http = getRESTClient()
+        def resp = http.post(path:"subscribers/${customerId}/stop_auto_renew.xml", contentType:TEXT)
+        resp.status == 200
     }
 
     def activateFreeTrial(long customerId, long subscriptionId) {
-        
     }
 }
