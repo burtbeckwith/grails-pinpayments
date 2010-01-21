@@ -49,20 +49,22 @@ class SpreedlyService {
         return resp.status == 200
     }
 
-    def findAllSubscribers() {
-        def http = getRESTClient()
-        def resp = http.get(path:"subscribers.xml")
-        resp.data
-    }
-
-    def findSubscriber(Long customerId) {
-
-    }
-
     boolean deleteAllSubscribers() {
         def http = getRESTClient()
         def resp = http.delete(path:'subscribers.xml', contentType:TEXT)
         return resp.status == 200
+    }
+
+    def findSubscriber(Long customerId) {
+        def http = getRESTClient()
+        def resp = http.get(path:"subscribers/${customerId}.xml")
+        resp.data
+    }
+
+    def findAllSubscribers() {
+        def http = getRESTClient()
+        def resp = http.get(path:"subscribers.xml")
+        resp.data
     }
 
     /*
