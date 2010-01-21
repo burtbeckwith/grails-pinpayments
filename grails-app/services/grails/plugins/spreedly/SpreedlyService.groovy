@@ -23,7 +23,7 @@ class SpreedlyService {
         http
     }
 
-    def createSubscriber(Long _customerId, String _email = '', String _screenName = '') {
+    def createSubscriber(long _customerId, String _email = '', String _screenName = '') {
         def http = getRESTClient()
         def resp = http.post(
             path:'subscribers.xml',
@@ -43,7 +43,7 @@ class SpreedlyService {
         resp.data
     }
 
-    boolean deleteSubscriber(Long customerId) {
+    boolean deleteSubscriber(long customerId) {
         def http = getRESTClient()
         def resp = http.delete(path:"subscribers/${customerId}.xml", contentType:TEXT)
         return resp.status == 200
@@ -55,7 +55,7 @@ class SpreedlyService {
         return resp.status == 200
     }
 
-    def findSubscriber(Long customerId) {
+    def findSubscriber(long customerId) {
         def http = getRESTClient()
         def resp = http.get(path:"subscribers/${customerId}.xml")
         resp.data
@@ -103,7 +103,7 @@ class SpreedlyService {
         resp.data."subscription-plan"
     }
 
-    def findSubscriptionPlan(Long subscriptionId) {
+    def findSubscriptionPlan(long subscriptionId) {
         def plans = findAllSubscriptionPlans()
         plans.find { it.id.text().toLong() == subscriptionId }
     }
@@ -113,15 +113,43 @@ class SpreedlyService {
         plans.find { it.name.text() == name }
     }
 
-    def giveComplementarySubscription(Long customerId, String quantity, String units) {
-        
+    /**
+    *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-a-subscriber/
+    */
+    def giveComplimentarySubscription(long customerId, int quantity, String units) {
+        def http = getRESTClient()
+        def resp = http.post(
+            path:"subscribers/${customerId}/complimentary_subscriptions.xml",
+            requestContentType:XML,
+            body: {
+                complimentary_subscription {
+                    duration_quantity quantity
+                    duration_units units
+                    feature_level 'Pro'
+                }
+            }
+        )
+        switch(resp.status) {
+            case 201:
+                // Success !
+                return resp.data
+
+            case 404:
+                throw new Exception("Unknown subscriber")
+
+            case 422:
+                throw new Exception("Invalid format")
+
+            case 403:
+                throw new Exception("An active subscriber cannot receive a complementary subscription")
+        }
     }
 
-    def stopAutoRenew(Long customerId) {
+    def stopAutoRenew(long customerId) {
 
     }
 
-    def activateFreeTrial(Long customerId, Long subscriptionId) {
+    def activateFreeTrial(long customerId, long subscriptionId) {
         
     }
 }

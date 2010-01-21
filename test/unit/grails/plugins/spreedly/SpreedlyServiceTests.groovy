@@ -99,4 +99,14 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertEquals 'roger', subscriber.'screen-name'.text()
         service.deleteAllSubscribers()
     }
+
+    void testGiveComplementarySubscription() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        assertFalse subscriber.active.text().toBoolean()
+        subscriber = service.giveComplimentarySubscription(customerId, 2, 'months')
+        assertNotNull subscriber
+        assertTrue subscriber.active.text().toBoolean()
+    }
 }
