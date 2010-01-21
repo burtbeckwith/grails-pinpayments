@@ -120,6 +120,15 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         assertTrue service.updateSubscriber(customerId, ['screen-name':'joe'])
     }
 
+    void testGiveLifetimeComplimentarySubscription() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        subscriber = service.giveLifetimeComplimentarySubscription(customerId)
+        assertNotNull subscriber
+        assertTrue subscriber.'lifetime-subscription'.text().toBoolean()
+    }
+//
 //    void testGiveComplimentaryTimeExtension() {
 //        def service = new SpreedlyService()
 //        long customerId = new Date().time

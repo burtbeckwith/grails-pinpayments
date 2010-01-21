@@ -202,6 +202,33 @@ class SpreedlyService {
         }
     }
 
+    /**
+    *   Reference : http://spreedly.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
+    */
+    def giveLifetimeComplimentarySubscription(long customerId) {
+        def http = getRESTClient()
+        def resp = http.post(
+            path:"subscribers/${customerId}/lifetime_complimentary_subscriptions.xml",
+            requestContentType:XML,
+            body: {
+                lifetime_complimentary_subscription {
+                    feature_level 'Pro'
+                }
+            }
+        )
+        switch(resp.status) {
+            case 201:
+                // Success !
+                return resp.data
+
+            case 404:
+                throw new Exception("Unknown subscriber")
+
+            case 422:
+                throw new Exception("Invalid format")
+        }
+    }
+
     def stopAutoRenew(long customerId) {
 
     }
