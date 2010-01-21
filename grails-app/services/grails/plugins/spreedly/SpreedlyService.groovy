@@ -144,6 +144,15 @@ class SpreedlyService {
     */
     def giveComplimentarySubscription(long customerId, int quantity, String units) {
         def http = getRESTClient()
+        http.handler.'403' = {
+            throw new Exception("An active subscriber cannot receive a complementary subscription")
+        }
+        http.handler.'404' = {
+            throw new Exception("Unknown subscriber")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
         def resp = http.post(
             path:"subscribers/${customerId}/complimentary_subscriptions.xml",
             requestContentType:XML,
@@ -155,20 +164,7 @@ class SpreedlyService {
                 }
             }
         )
-        switch(resp.status) {
-            case 201:
-                // Success !
-                return resp.data
-
-            case 404:
-                throw new Exception("Unknown subscriber")
-
-            case 422:
-                throw new Exception("Invalid format")
-
-            case 403:
-                throw new Exception("An active subscriber cannot receive a complementary subscription")
-        }
+        resp.status ? resp.data : ''
     }
 
     /**
@@ -176,6 +172,15 @@ class SpreedlyService {
     */
     def giveComplimentaryTimeExtension(long customerId, int quantity, String units) {
         def http = getRESTClient()
+        http.handler.'403' = {
+            throw new Exception("An inactive subscriber cannot receive a complementary time extension")
+        }
+        http.handler.'404' = {
+            throw new Exception("Unknown subscriber")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
         def resp = http.post(
             path:"subscribers/${customerId}/complimentary_time_extensions.xml",
             requestContentType:XML,
@@ -186,20 +191,7 @@ class SpreedlyService {
                 }
             }
         )
-        switch(resp.status) {
-            case 201:
-                // Success !
-                return resp.data
-
-            case 404:
-                throw new Exception("Unknown subscriber")
-
-            case 422:
-                throw new Exception("Invalid format")
-
-            case 403:
-                throw new Exception("An inactive subscriber cannot receive a complementary time extension")
-        }
+        resp.status ? resp.data : ''
     }
 
     /**
@@ -207,6 +199,12 @@ class SpreedlyService {
     */
     def giveLifetimeComplimentarySubscription(long customerId) {
         def http = getRESTClient()
+        http.handler.'404' = {
+            throw new Exception("Unknown subscriber")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
         def resp = http.post(
             path:"subscribers/${customerId}/lifetime_complimentary_subscriptions.xml",
             requestContentType:XML,
@@ -216,17 +214,7 @@ class SpreedlyService {
                 }
             }
         )
-        switch(resp.status) {
-            case 201:
-                // Success !
-                return resp.data
-
-            case 404:
-                throw new Exception("Unknown subscriber")
-
-            case 422:
-                throw new Exception("Invalid format")
-        }
+        resp.status ? resp.data : ''
     }
 
     /**
@@ -238,6 +226,29 @@ class SpreedlyService {
         resp.status == 200
     }
 
-    def activateFreeTrial(long customerId, long subscriptionId) {
+    /**
+    *   Reference : http://spreedly.com/manual/integration-reference/programatically-subscribing-to-free-trial/
+    */
+    def subscribeToFreeTrial(long customerId, long subscriptionId) {
+        def http = getRESTClient()
+        http.handler.'403' = {
+            throw new Exception("Invalid state, check that the subscriber is eligible and that the plan is a free plan")
+        }
+        http.handler.'404' = {
+            throw new Exception("Unknown subscriber")
+        }
+        http.handler.'422' = {
+            throw new Exception("Invalid format")
+        }
+        def resp = http.post(
+            path:"subscribers/${customerId}/subscribe_to_free_trial.xml",
+            requestContentType:XML,
+            body: {
+                subscription_plan {
+                    id subscriptionId
+                }
+            }
+        )
+        resp.status ? resp.data : ''
     }
 }

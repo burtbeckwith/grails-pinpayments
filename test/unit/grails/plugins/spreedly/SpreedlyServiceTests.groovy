@@ -135,6 +135,24 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
         assertTrue service.stopAutoRenew(customerId)
     }
+
+    void testSubscribeToFreeTrial() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        subscriber = service.subscribeToFreeTrial(customerId, 3804)
+        assertTrue subscriber.'on-trial'.text().toBoolean()
+    }
+
+    void testUnknownSubscriberSubscribeToFreeTrial() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        def result = shouldFail(Exception.class) {
+            service.subscribeToFreeTrial(customerId, 3804)
+        }
+        assertEquals 'Unknown subscriber', result
+    }
+
 //
 //    void testGiveComplimentaryTimeExtension() {
 //        def service = new SpreedlyService()
