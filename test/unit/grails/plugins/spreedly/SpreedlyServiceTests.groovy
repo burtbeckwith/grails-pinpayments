@@ -10,7 +10,7 @@ class SpreedlyServiceTests extends GrailsUnitTestCase {
         mockLogging(SpreedlyService, true)
         mockConfig('''
 spreedly.siteName = 'grails-spreedly-test'
-spreedly.authToken = '7970a60046d945f520fc9be915b71c86c7de4560'
+spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 ''')
     }
 
@@ -44,21 +44,23 @@ spreedly.authToken = '7970a60046d945f520fc9be915b71c86c7de4560'
     }
 
     void testCreateSubscriberXML() {
-        def customerId = new Date().time
-        def screenName = ''
-        def email = ''
+        def _customerId = new Date().time
+        def _screenName = 'roger'
+        def _email = 'roger@rabbit.com'
         def xml = new StreamingMarkupBuilder().bind {
             subscriber {
-                'customer-id' customerId
-                if (screenName) {
-                    'screen-name' screenName
+                'customer-id' _customerId
+                if (_screenName) {
+                    'screen-name' _screenName
                 }
-                if (email) {
-                    'email' email
+                if (_email) {
+                    email _email
                 }
             }
         }.toString()
         assertNotNull xml
+        println xml
+        assertEquals "<subscriber><customer-id>${_customerId}</customer-id><screen-name>${_screenName}</screen-name><email>${_email}</email></subscriber>", xml
     }
     void testCreateSubscriber() {
         def service = new SpreedlyService()
@@ -71,7 +73,7 @@ spreedly.authToken = '7970a60046d945f520fc9be915b71c86c7de4560'
     void testDeleteSubscriber() {
         def service = new SpreedlyService()
         long customerId = new Date().time
-        service.createSubscriber(customerId)
+        service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
         assertTrue service.deleteSubscriber(customerId)
     }
 }

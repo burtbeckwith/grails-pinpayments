@@ -23,19 +23,19 @@ class SpreedlyService {
         http
     }
 
-    def createSubscriber(Long customerId, String email = '', String screenName = '') {
+    def createSubscriber(Long _customerId, String _email = '', String _screenName = '') {
         def http = getRESTClient()
         def resp = http.post(
             path:'subscribers.xml',
             requestContentType:XML,
             body: {
                 subscriber {
-                    'customer-id' customerId
-                    if (screenName) {
-                        'screen-name' screenName
+                    'customer-id' _customerId
+                    if (_screenName) {
+                        'screen-name' _screenName
                     }
-                    if (email) {
-                        'email' email
+                    if (_email) {
+                        email _email
                     }
                 }
             }
