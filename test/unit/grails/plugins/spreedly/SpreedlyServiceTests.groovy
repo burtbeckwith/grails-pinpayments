@@ -68,6 +68,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         def subscriber = service.createSubscriber(customerId)
         assertNotNull subscriber
         assertEquals customerId, subscriber.'customer-id'.text().toLong()
+        service.deleteAllSubscribers()
     }
 
     void testDeleteSubscriber() {
@@ -75,5 +76,16 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
         long customerId = new Date().time
         service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
         assertTrue service.deleteSubscriber(customerId)
+    }
+
+    void testFindAllSubscribers() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        service.deleteAllSubscribers()
+        service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+        service.createSubscriber(customerId + 1, 'danny@rabbit.com', 'danny')
+        def subscribers = service.findAllSubscribers()
+        assertNotNull subscribers
+        assertEquals 2, subscribers.subscriber.size()
     }
 }

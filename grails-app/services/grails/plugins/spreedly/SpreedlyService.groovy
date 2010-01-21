@@ -49,6 +49,12 @@ class SpreedlyService {
         return resp.status == 200
     }
 
+    def findAllSubscribers() {
+        def http = getRESTClient()
+        def resp = http.get(path:"subscribers.xml")
+        resp.data
+    }
+
     def findSubscriber(Long customerId) {
 
     }
