@@ -63,8 +63,15 @@ spreedly.authToken = '7970a60046d945f520fc9be915b71c86c7de4560'
     void testCreateSubscriber() {
         def service = new SpreedlyService()
         long customerId = new Date().time
-        def subscriber = service.createSubscriber(new Date().time)
+        def subscriber = service.createSubscriber(customerId)
         assertNotNull subscriber
         assertEquals customerId, subscriber.'customer-id'.text().toLong()
+    }
+
+    void testDeleteSubscriber() {
+        def service = new SpreedlyService()
+        long customerId = new Date().time
+        service.createSubscriber(customerId)
+        assertTrue service.deleteSubscriber(customerId)
     }
 }

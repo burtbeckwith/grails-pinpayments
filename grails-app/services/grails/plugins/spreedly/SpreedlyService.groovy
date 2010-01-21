@@ -43,8 +43,10 @@ class SpreedlyService {
         resp.data
     }
 
-    def deleteSubscriber(Long customerId) {
-
+    boolean deleteSubscriber(Long customerId) {
+        def http = getRESTClient()
+        def resp = http.delete(path:"subscribers/${customerId}.xml", contentType:TEXT)
+        return resp.status == 200
     }
 
     def findSubscriber(Long customerId) {
