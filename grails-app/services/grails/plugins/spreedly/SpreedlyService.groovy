@@ -12,7 +12,7 @@ class SpreedlyService {
     String siteName = CH.config.spreedly.siteName
     String authToken = CH.config.spreedly.authToken
 
-    RESTClient getRESTClient() {
+    private RESTClient getRESTClient() {
         def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
         http.auth.basic authToken, ''
         http.handler.failure = { resp ->
@@ -46,12 +46,22 @@ class SpreedlyService {
         resp.data
     }
 
+    /**
+     *  Test Api - Only works for test sites
+     *  
+     *  Reference : http://spreedly.com/manual/integration-reference/deleting-one-test-subscriber/
+     */
     boolean deleteSubscriber(long customerId) {
         def http = getRESTClient()
         def resp = http.delete(path:"subscribers/${customerId}.xml", contentType:TEXT)
         resp.status == 200
     }
 
+    /**
+     *  Test Api - Only works for test sites
+     *
+     *  Reference : http://spreedly.com/manual/integration-reference/deleting-all-test-subscribers/
+     */
     boolean deleteAllSubscribers() {
         def http = getRESTClient()
         def resp = http.delete(path:'subscribers.xml', contentType:TEXT)
@@ -59,7 +69,7 @@ class SpreedlyService {
     }
 
     /**
-     * Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
+     *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
      */
     def findSubscriber(long customerId) {
         def http = getRESTClient()
@@ -67,6 +77,9 @@ class SpreedlyService {
         resp.data
     }
 
+    /**
+     *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
+     */
     def findAllSubscribers() {
         def http = getRESTClient()
         def resp = http.get(path:"subscribers.xml")
@@ -74,7 +87,7 @@ class SpreedlyService {
     }
 
     /**
-     * Reference : http://spreedly.com/manual/integration-reference/update-subscriber/
+     *  Reference : http://spreedly.com/manual/integration-reference/update-subscriber/
      */
     boolean updateSubscriber(long customerId, Map args) {
         def http = getRESTClient()
@@ -94,54 +107,67 @@ class SpreedlyService {
     }
 
     /*
-    *
-    *  Sample xml returned:
-    *
-<?xml version="1.0" encoding="UTF-8"?>
-<subscription-plans type="array">
-  <subscription-plan>
-    <amount type="decimal">24.0</amount>
-    <charge-after-first-period type="boolean">false</charge-after-first-period>
-    <charge-later-duration-quantity type="integer" nil="true"></charge-later-duration-quantity>
-    <charge-later-duration-units nil="true"></charge-later-duration-units>
-    <created-at type="datetime">2010-01-19T10:39:48Z</created-at>
-    <currency-code>USD</currency-code>
-    <description nil="true"></description>
-    <duration-quantity type="integer">3</duration-quantity>
-    <duration-units>months</duration-units>
-    <enabled type="boolean">true</enabled>
-    <feature-level>example</feature-level>
-    <force-recurring type="boolean">false</force-recurring>
-    <id type="integer">3765</id>
-    <name>Example Plan</name>
-    <needs-to-be-renewed type="boolean">true</needs-to-be-renewed>
-    <plan-type>regular</plan-type>
-    <return-url>http://spreedly.com/sample-return</return-url>
-    <updated-at type="datetime">2010-01-19T10:39:48Z</updated-at>
-    <terms type="string">3 months</terms>
-    <price type="decimal">24.0</price>
-  </subscription-plan>
-</subscription-plans>
-    */
+     *   Subscription API
+     *
+     *   Sample xml returned:
+     *
+     *   <?xml version="1.0" encoding="UTF-8"?>
+     *   <subscription-plans type="array">
+     *     <subscription-plan>
+     *       <amount type="decimal">24.0</amount>
+     *       <charge-after-first-period type="boolean">false</charge-after-first-period>
+     *       <charge-later-duration-quantity type="integer" nil="true"></charge-later-duration-quantity>
+     *       <charge-later-duration-units nil="true"></charge-later-duration-units>
+     *       <created-at type="datetime">2010-01-19T10:39:48Z</created-at>
+     *       <currency-code>USD</currency-code>
+     *       <description nil="true"></description>
+     *       <duration-quantity type="integer">3</duration-quantity>
+     *       <duration-units>months</duration-units>
+     *       <enabled type="boolean">true</enabled>
+     *       <feature-level>example</feature-level>
+     *       <force-recurring type="boolean">false</force-recurring>
+     *       <id type="integer">3765</id>
+     *       <name>Example Plan</name>
+     *       <needs-to-be-renewed type="boolean">true</needs-to-be-renewed>
+     *       <plan-type>regular</plan-type>
+     *       <return-url>http://spreedly.com/sample-return</return-url>
+     *       <updated-at type="datetime">2010-01-19T10:39:48Z</updated-at>
+     *       <terms type="string">3 months</terms>
+     *       <price type="decimal">24.0</price>
+     *     </subscription-plan>
+     *   </subscription-plans>
+     *
+     *   Reference : http://spreedly.com/manual/integration-reference/programatically-pulling-subscription-plans/
+     */
     def findAllSubscriptionPlans() {
         def http = getRESTClient()
         def resp = http.get(path:'subscription_plans.xml')
         resp.data."subscription-plan"
     }
 
+    /**
+     *  Subscription API
+     *
+     *  Convenience method
+     */
     def findSubscriptionPlan(long subscriptionId) {
         def plans = findAllSubscriptionPlans()
         plans.find { it.id.text().toLong() == subscriptionId }
     }
 
+    /**
+     *  Subscription API
+     *
+     *  Convenience method
+     */
     def findSubscriptionPlanByName(String name) {
         def plans = findAllSubscriptionPlans()
         plans.find { it.name.text() == name }
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-a-subscriber/
-    */
+     *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-a-subscriber/
+     */
     def giveComplimentarySubscription(long customerId, int quantity, String units) {
         def http = getRESTClient()
         http.handler.'403' = {
@@ -168,8 +194,8 @@ class SpreedlyService {
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-subscriber-time-extension/
-    */
+     *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-subscriber-time-extension/
+     */
     def giveComplimentaryTimeExtension(long customerId, int quantity, String units) {
         def http = getRESTClient()
         http.handler.'403' = {
@@ -195,8 +221,8 @@ class SpreedlyService {
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
-    */
+     *   Reference : http://spreedly.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
+     */
     def giveLifetimeComplimentarySubscription(long customerId) {
         def http = getRESTClient()
         http.handler.'404' = {
@@ -218,8 +244,8 @@ class SpreedlyService {
     }
 
     /**
-    * Reference : http://spreedly.com/manual/integration-reference/programatically-stop-auto-renew/
-    */
+     * Reference : http://spreedly.com/manual/integration-reference/programatically-stop-auto-renew/
+     */
     boolean stopAutoRenew(long customerId) {
         def http = getRESTClient()
         def resp = http.post(path:"subscribers/${customerId}/stop_auto_renew.xml", contentType:TEXT)
@@ -227,8 +253,8 @@ class SpreedlyService {
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/programatically-subscribing-to-free-trial/
-    */
+     *   Reference : http://spreedly.com/manual/integration-reference/programatically-subscribing-to-free-trial/
+     */
     def subscribeToFreeTrial(long customerId, long subscriptionId) {
         def http = getRESTClient()
         http.handler.'403' = {
@@ -253,8 +279,10 @@ class SpreedlyService {
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/payments-api/create-invoice/
-    */
+     *  Payment API
+     *
+     *   Reference : http://spreedly.com/manual/integration-reference/payments-api/create-invoice/
+     */
     def createInvoice(long subscriptionId, long customerId, String screenName = '', String _email = '') {
         def http = getRESTClient()
         http.handler.'403' = {
@@ -288,8 +316,10 @@ class SpreedlyService {
     }
 
     /**
-    *   Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
-    */
+     *  Payment API
+     *  
+     *  Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
+     */
     def payInvoice(String invoiceToken, String cardNumber, String cardType, String verificationValue,
         String _month, String _year, String firstName, String lastName) {
         def http = getRESTClient()
