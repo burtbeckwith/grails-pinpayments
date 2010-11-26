@@ -27,11 +27,11 @@ grails.project.dependency.resolution = {
 
         // runtime 'mysql:mysql-connector-java:5.1.5'
 
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0-RC2') {
-            excludes 'xercesImpl'
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
+            excludes 'xercesImpl', 'groovy'
         }
-        test('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0-RC2') {
-            excludes 'xercesImpl'
+        test('org.codehaus.groovy.modules.http-builder:http-builder:0.5.0') {
+            excludes 'xercesImpl', 'groovy'
         }
     }
 

@@ -1,0 +1,21 @@
+<plugin name='spreedly' version='0.1.1' grailsVersion='1.2.0 &gt; *'>
+  <author>Luis Arias</author>
+  <authorEmail>luis@balsamiq.com</authorEmail>
+  <title>Spreedly payment service integration for Grails.</title>
+  <description>\
+The Grails Spreedly plugin provides an easy way to access the Spreedly v4 API.class
+
+More information on the Spreedly payment service can be found on:
+
+http://www.spreedly.com
+</description>
+  <documentation>http://grails.org/plugin/spreedly</documentation>
+  <resources>
+    <resource>BuildConfig</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>grails.plugins.spreedly.SpreedlyService</resource>
+  </resources>
+  <dependencies />
+  <behavior />
+</plugin>
