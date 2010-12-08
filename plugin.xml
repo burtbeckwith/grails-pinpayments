@@ -1,4 +1,4 @@
-<plugin name='spreedly' version='0.1.2' grailsVersion='1.2.0 &gt; *'>
+<plugin name='spreedly' version='0.1.3-SNAPSHOT' grailsVersion='1.2.0 &gt; *'>
   <author>Luis Arias</author>
   <authorEmail>luis@balsamiq.com</authorEmail>
   <title>Spreedly payment service integration for Grails.</title>
