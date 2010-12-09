@@ -15,6 +15,7 @@ http://www.spreedly.com
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
     <resource>grails.plugins.spreedly.SpreedlyService</resource>
+    <resource>grails.plugins.spreedly.SpreedlyTagLib</resource>
   </resources>
   <dependencies />
   <behavior />

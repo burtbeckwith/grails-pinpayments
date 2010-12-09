@@ -146,7 +146,7 @@ class SpreedlyService {
   def findAllSubscriptionPlans() {
     def http = getRESTClient()
     def resp = http.get(path: 'subscription_plans.xml')
-    resp.data."subscription-plan"
+    resp.data.'subscription-plan'
   }
 
   /**
