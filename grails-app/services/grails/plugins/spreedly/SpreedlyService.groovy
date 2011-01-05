@@ -355,4 +355,29 @@ class SpreedlyService {
     )
     resp.status == 200 ? resp.data : null
   }
+
+  /**
+   * Adding Store Credit to a Subscriber
+   * http://www.spreedly.com/manual/integration-reference/adding-store-credit-to-a-subscriber
+   * 
+   */
+  def addStoreCredit(long customerId, String _amount) {
+    def http = getRESTClient()
+    http.handler.'404' = {
+      throw new Exception("Unknown subscriber")
+    }
+    http.handler.'422' = {
+      throw new Exception("Invalid amount : ${_amount}")
+    }
+    def resp = http.post(
+        path: "subscribers/${customerId}/credits.xml",
+        requestContentType: XML,
+        body: {
+          credit {
+            amount _amount
+          }
+        }
+    )
+    resp.status == 201 ? resp.data : null
+  }
 }
