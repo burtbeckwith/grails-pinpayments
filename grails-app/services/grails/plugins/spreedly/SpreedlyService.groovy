@@ -361,7 +361,7 @@ class SpreedlyService {
    * http://www.spreedly.com/manual/integration-reference/adding-store-credit-to-a-subscriber
    * 
    */
-  def addStoreCredit(long customerId, String _amount) {
+  boolean addStoreCredit(long customerId, String _amount) {
     def http = getRESTClient()
     http.handler.'404' = {
       throw new Exception("Unknown subscriber")
@@ -371,6 +371,7 @@ class SpreedlyService {
     }
     def resp = http.post(
         path: "subscribers/${customerId}/credits.xml",
+        contentType: TEXT,
         requestContentType: XML,
         body: {
           credit {
@@ -378,6 +379,6 @@ class SpreedlyService {
           }
         }
     )
-    resp.status == 201 ? resp.data : null
+    resp.status == 201
   }
 }
