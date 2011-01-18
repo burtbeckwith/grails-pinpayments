@@ -4,6 +4,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import groovyx.net.http.RESTClient
 import static groovyx.net.http.ContentType.TEXT
 import static groovyx.net.http.ContentType.XML
+import org.apache.http.params.HttpParams
+import org.apache.http.params.HttpConnectionParams
 
 class SpreedlyService {
 
@@ -14,6 +16,9 @@ class SpreedlyService {
 
   private RESTClient getRESTClient() {
     def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
+    HttpParams httpParams = http.client.params
+    HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
+    HttpConnectionParams.setSoTimeout(httpParams, 30000);
     http.auth.basic authToken, ''
     http.handler.failure = { resp ->
       log.error "Error calling spreedly : ${resp.statusLine}"
