@@ -11,10 +11,10 @@ class SpreedlyService {
 
   boolean transactional = false
 
-  String siteName = CH.config.spreedly.siteName
-  String authToken = CH.config.spreedly.authToken
+  String SITE_NAME = CH.config.spreedly?.siteName ?: 'yourSiteName'
+  String AUTH_TOKEN = CH.config.spreedly?.authToken ?: 'yourAuthToken'
 
-  private RESTClient getRESTClient() {
+  private RESTClient getRESTClient(String siteName, String authToken) {
     def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
     HttpParams httpParams = http.client.params
     HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
@@ -30,8 +30,8 @@ class SpreedlyService {
   /**
    *  Reference : http://spreedly.com/manual/integration-reference/programatically-creating-a-subscriber/
    */
-  def createSubscriber(long _customerId, String _email = '', String _screenName = '') {
-    def http = getRESTClient()
+  def createSubscriber(long _customerId, String _email = '', String _screenName = '', String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.post(
         path: 'subscribers.xml',
         requestContentType: XML,
@@ -55,8 +55,8 @@ class SpreedlyService {
    *
    *  Reference : http://spreedly.com/manual/integration-reference/deleting-one-test-subscriber/
    */
-  boolean deleteSubscriber(long customerId) {
-    def http = getRESTClient()
+  boolean deleteSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.delete(path: "subscribers/${customerId}.xml", contentType: TEXT)
     resp.status == 200
   }
@@ -66,8 +66,8 @@ class SpreedlyService {
    *
    *  Reference : http://spreedly.com/manual/integration-reference/deleting-all-test-subscribers/
    */
-  boolean deleteAllSubscribers() {
-    def http = getRESTClient()
+  boolean deleteAllSubscribers(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.delete(path: 'subscribers.xml', contentType: TEXT)
     resp.status == 200
   }
@@ -75,8 +75,8 @@ class SpreedlyService {
   /**
    *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
    */
-  def findSubscriber(long customerId) {
-    def http = getRESTClient()
+  def findSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'404' = { resp ->
       // 404 means there is no subscriber with the given id, just return null later on
       resp
@@ -88,8 +88,8 @@ class SpreedlyService {
   /**
    *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
    */
-  def findAllSubscribers() {
-    def http = getRESTClient()
+  def findAllSubscribers(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.get(path: "subscribers.xml")
     resp.data
   }
@@ -97,8 +97,8 @@ class SpreedlyService {
   /**
    *  Reference : http://spreedly.com/manual/integration-reference/update-subscriber/
    */
-  boolean updateSubscriber(long customerId, Map args) {
-    def http = getRESTClient()
+  boolean updateSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN, Map args) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.put(
         path: "subscribers/${customerId}.xml",
         contentType: TEXT,
@@ -148,8 +148,8 @@ class SpreedlyService {
   *   Reference : http://spreedly.com/manual/integration-reference/programatically-pulling-subscription-plans/
   */
 
-  def findAllSubscriptionPlans() {
-    def http = getRESTClient()
+  def findAllSubscriptionPlans(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.get(path: 'subscription_plans.xml')
     resp.data.'subscription-plan'
   }
@@ -159,8 +159,8 @@ class SpreedlyService {
    *
    *  Convenience method
    */
-  def findSubscriptionPlan(long subscriptionId) {
-    def plans = findAllSubscriptionPlans()
+  def findSubscriptionPlan(long subscriptionId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def plans = findAllSubscriptionPlans(siteName, authToken)
     plans.find { it.id.text().toLong() == subscriptionId }
   }
 
@@ -169,16 +169,16 @@ class SpreedlyService {
    *
    *  Convenience method
    */
-  def findSubscriptionPlanByName(String name) {
-    def plans = findAllSubscriptionPlans()
+  def findSubscriptionPlanByName(String name, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def plans = findAllSubscriptionPlans(siteName, authToken)
     plans.find { it.name.text() == name }
   }
 
   /**
    *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-a-subscriber/
    */
-  def giveComplimentarySubscription(long customerId, int quantity, String units) {
-    def http = getRESTClient()
+  def giveComplimentarySubscription(long customerId, int quantity, String units, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'403' = {
       throw new Exception("An active subscriber cannot receive a complementary subscription")
     }
@@ -205,8 +205,8 @@ class SpreedlyService {
   /**
    *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-subscriber-time-extension/
    */
-  def giveComplimentaryTimeExtension(long customerId, int quantity, String units) {
-    def http = getRESTClient()
+  def giveComplimentaryTimeExtension(long customerId, int quantity, String units, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'403' = {
       throw new Exception("An inactive subscriber cannot receive a complementary time extension")
     }
@@ -232,8 +232,8 @@ class SpreedlyService {
   /**
    *   Reference : http://spreedly.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
    */
-  def giveLifetimeComplimentarySubscription(long customerId) {
-    def http = getRESTClient()
+  def giveLifetimeComplimentarySubscription(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'404' = {
       throw new Exception("Unknown subscriber")
     }
@@ -255,8 +255,8 @@ class SpreedlyService {
   /**
    * Reference : http://spreedly.com/manual/integration-reference/programatically-stop-auto-renew/
    */
-  boolean stopAutoRenew(long customerId) {
-    def http = getRESTClient()
+  boolean stopAutoRenew(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     def resp = http.post(path: "subscribers/${customerId}/stop_auto_renew.xml", contentType: TEXT)
     resp.status == 200
   }
@@ -264,8 +264,8 @@ class SpreedlyService {
   /**
    *   Reference : http://spreedly.com/manual/integration-reference/programatically-subscribing-to-free-trial/
    */
-  def subscribeToFreeTrial(long customerId, long subscriptionId) {
-    def http = getRESTClient()
+  def subscribeToFreeTrial(long customerId, long subscriptionId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'403' = {
       throw new Exception("Invalid state, check that the subscriber is eligible and that the plan is a free plan")
     }
@@ -292,8 +292,8 @@ class SpreedlyService {
    *
    *   Reference : http://spreedly.com/manual/integration-reference/payments-api/create-invoice/
    */
-  def createInvoice(long subscriptionId, long customerId, String screenName = '', String _email = '') {
-    def http = getRESTClient()
+  def createInvoice(long subscriptionId, long customerId, String screenName = '', String _email = '', String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'403' = {
       throw new Exception("Subscription plan is disabled")
     }
@@ -330,8 +330,8 @@ class SpreedlyService {
    *  Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
    */
   def payInvoice(String invoiceToken, String cardNumber, String cardType, String verificationValue,
-                 String _month, String _year, String firstName, String lastName) {
-    def http = getRESTClient()
+                 String _month, String _year, String firstName, String lastName, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'403' = {
       throw new Exception("Subscription plan is disabled")
     }
@@ -366,8 +366,8 @@ class SpreedlyService {
    * http://www.spreedly.com/manual/integration-reference/adding-store-credit-to-a-subscriber
    * 
    */
-  boolean addStoreCredit(long customerId, String _amount) {
-    def http = getRESTClient()
+  boolean addStoreCredit(long customerId, String _amount, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
     http.handler.'404' = {
       throw new Exception("Unknown subscriber")
     }

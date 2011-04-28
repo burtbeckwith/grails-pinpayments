@@ -21,8 +21,8 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 
     void testConfigOk() {
         def service = new SpreedlyService()
-        assertNotNull service.siteName
-        assertNotNull service.authToken
+        assertNotNull service.SITE_NAME
+        assertNotNull service.AUTH_TOKEN
     }
 
     void testFindAllSubscriptionPlans() {
