@@ -16,9 +16,9 @@ http://www.spreedly.com
     <resource>grails.plugins.spreedly.SpreedlyTagLib</resource>
   </resources>
   <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
     <repository name='http://repository.codehaus.org' url='http://repository.codehaus.org/' />
-    <repository name='grailsCentral' url='http://grails.org/plugins' />
   </repositories>
   <dependencies>
     <compile>
