@@ -1,29 +1,23 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
-grails.project.test.reports.dir	= "target/test-reports"
+grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
+grails.release.scm.enabled = false
 grails.project.dependency.resolution = {
-    // inherit Grails' default dependencies
-    inherits( "global" ) {
-        // uncomment to disable ehcache
-        // excludes 'ehcache'
-    }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    repositories {
-        grailsPlugins()
-        grailsHome()
-
-        // uncomment the below to enable remote dependency resolution
-        // from public Maven repositories
-        mavenLocal()
-        mavenCentral()
-        //mavenRepo "http://snapshots.repository.codehaus.org"
-        mavenRepo "http://repository.codehaus.org"
-        //mavenRepo "http://download.java.net/maven/2/"
-        //mavenRepo "http://repository.jboss.com/maven2/"
-    }
-    dependencies {
-        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+  // inherit Grails' default dependencies
+  inherits("global") {
+    // uncomment to disable ehcache
+    // excludes 'ehcache'
+  }
+  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  legacyResolve false
+  repositories {
+    grailsCentral()
+    mavenCentral()
+    mavenRepo "http://repository.codehaus.org"
+  }
+  dependencies {
+    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
 //        // Workaround to deal with http-builder not loading nekohtml
 //        runtime ('xerces:xercesImpl:2.9.1'){
@@ -34,16 +28,16 @@ grails.project.dependency.resolution = {
 //        }
 //        // End of workaround
 
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
-          excludes 'xercesImpl', 'groovy', 'nekohtml'
-        }
-        runtime('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
-          excludes 'xercesImpl', 'groovy', 'nekohtml'
-        }
+    compile('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
+      excludes 'xercesImpl', 'groovy', 'nekohtml'
     }
-    plugins {
-      build(":release:2.2.0") {
-        export = false
-      }
+    runtime('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
+      excludes 'xercesImpl', 'groovy', 'nekohtml'
     }
+  }
+  plugins {
+    build(":release:2.2.0") {
+      export = false
+    }
+  }
 }
