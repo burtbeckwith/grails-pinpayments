@@ -9,7 +9,7 @@ grails.project.dependency.resolution = {
         // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    repositories {        
+    repositories {
         grailsPlugins()
         grailsHome()
 
@@ -25,21 +25,19 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-        // runtime 'mysql:mysql-connector-java:5.1.5'
+//        // Workaround to deal with http-builder not loading nekohtml
+//        runtime ('xerces:xercesImpl:2.9.1'){
+//          excludes "xml-apis"
+//        }
+//        runtime ('net.sourceforge.nekohtml:nekohtml:1.9.14'){
+//          excludes "xercesImpl"
+//        }
+//        // End of workaround
 
-        // Workaround to deal with http-builder not loading nekohtml
-        runtime ('xerces:xercesImpl:2.9.1'){
-          excludes "xml-apis"
-        }
-        runtime ('net.sourceforge.nekohtml:nekohtml:1.9.14'){
-          excludes "xercesImpl"
-        }
-        // End of workaround
-
-        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.1') {
+        compile('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
           excludes 'xercesImpl', 'groovy', 'nekohtml'
         }
-        runtime('org.codehaus.groovy.modules.http-builder:http-builder:0.5.1') {
+        runtime('org.codehaus.groovy.modules.http-builder:http-builder:0.6') {
           excludes 'xercesImpl', 'groovy', 'nekohtml'
         }
     }

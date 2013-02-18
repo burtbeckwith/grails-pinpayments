@@ -3,3 +3,7 @@
 ./web-app/WEB-INF/tld/fmt.tld
 ./stacktrace.log
 ./grails-spreedly.iml
+./.idea
+./grails-spreedly.ipr
+./grails-spreedly.iws
+./grails-spreedly-grailsPlugins.iml

@@ -1,6 +1,6 @@
 class SpreedlyGrailsPlugin {
     // the plugin version
-    def version = "0.1.6-SNAPSHOT"
+    def version = "0.1.7"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2.0 > *"
     // the other plugins this plugin depends on
@@ -26,7 +26,7 @@ http://www.spreedly.com
     def documentation = "http://grails.org/plugin/spreedly"
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
