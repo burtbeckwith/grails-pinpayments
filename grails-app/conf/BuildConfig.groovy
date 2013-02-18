@@ -41,5 +41,9 @@ grails.project.dependency.resolution = {
           excludes 'xercesImpl', 'groovy', 'nekohtml'
         }
     }
-
+    plugins {
+      build(":release:2.2.0") {
+        export = false
+      }
+    }
 }

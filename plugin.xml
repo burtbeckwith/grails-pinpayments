@@ -1,4 +1,4 @@
-<plugin name='spreedly' version='0.1.5' grailsVersion='1.2.0 &gt; *'>
+<plugin name='spreedly' version='0.1.7' grailsVersion='1.2.0 &gt; *'>
   <author>Luis Arias</author>
   <authorEmail>luis@balsamiq.com</authorEmail>
   <title>Spreedly payment service integration for Grails.</title>
@@ -10,13 +10,25 @@ More information on the Spreedly payment service can be found on:
 http://www.spreedly.com
 </description>
   <documentation>http://grails.org/plugin/spreedly</documentation>
+  <type>SpreedlyGrailsPlugin</type>
   <resources>
-    <resource>BuildConfig</resource>
-    <resource>DataSource</resource>
-    <resource>UrlMappings</resource>
     <resource>grails.plugins.spreedly.SpreedlyService</resource>
     <resource>grails.plugins.spreedly.SpreedlyTagLib</resource>
   </resources>
-  <dependencies />
+  <repositories>
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://repository.codehaus.org' url='http://repository.codehaus.org/' />
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+  </repositories>
+  <dependencies>
+    <compile>
+      <dependency group='org.codehaus.groovy.modules.http-builder' name='http-builder' version='0.6' />
+    </compile>
+    <runtime>
+      <dependency group='org.codehaus.groovy.modules.http-builder' name='http-builder' version='0.6' />
+    </runtime>
+  </dependencies>
+  <plugins />
+  <runtimePluginRequirements />
   <behavior />
 </plugin>
