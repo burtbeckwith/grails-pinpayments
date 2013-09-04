@@ -1,4 +1,4 @@
-package grails.plugins.spreedly
+package grails.plugins.pinpayments
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import groovyx.net.http.RESTClient
@@ -7,7 +7,7 @@ import static groovyx.net.http.ContentType.XML
 import org.apache.http.params.HttpParams
 import org.apache.http.params.HttpConnectionParams
 
-class SpreedlyService {
+class PinPaymentsService {
 
   boolean transactional = false
 
@@ -15,7 +15,7 @@ class SpreedlyService {
   String AUTH_TOKEN = CH.config.spreedly?.authToken ?: 'yourAuthToken'
 
   private RESTClient getRESTClient(String siteName, String authToken) {
-    def http = new RESTClient("https://spreedly.com/api/v4/${siteName}/")
+    def http = new RESTClient("https://subs.pinpayments.com/api/v4/${siteName}/")
     HttpParams httpParams = http.client.params
     HttpConnectionParams.setConnectionTimeout(httpParams, 30000);
     HttpConnectionParams.setSoTimeout(httpParams, 30000);
@@ -28,7 +28,7 @@ class SpreedlyService {
   }
 
   /**
-   *  Reference : http://spreedly.com/manual/integration-reference/programatically-creating-a-subscriber/
+   *  Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-creating-a-subscriber/
    */
   def createSubscriber(long _customerId, String _email = '', String _screenName = '', String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -53,7 +53,7 @@ class SpreedlyService {
   /**
    *  Test Api - Only works for test sites
    *
-   *  Reference : http://spreedly.com/manual/integration-reference/deleting-one-test-subscriber/
+   *  Reference : http://subs.pinpayments.com/manual/integration-reference/deleting-one-test-subscriber/
    */
   boolean deleteSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -64,7 +64,7 @@ class SpreedlyService {
   /**
    *  Test Api - Only works for test sites
    *
-   *  Reference : http://spreedly.com/manual/integration-reference/deleting-all-test-subscribers/
+   *  Reference : http://subs.pinpayments.com/manual/integration-reference/deleting-all-test-subscribers/
    */
   boolean deleteAllSubscribers(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -73,7 +73,7 @@ class SpreedlyService {
   }
 
   /**
-   *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
+   *  Reference : http://subs.pinpayments.com/manual/integration-guide/get-subscriber-info-from-spreedly/
    */
   def findSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -86,7 +86,7 @@ class SpreedlyService {
   }
 
   /**
-   *  Reference : http://spreedly.com/manual/integration-guide/get-subscriber-info-from-spreedly/
+   *  Reference : http://subs.pinpayments.com/manual/integration-guide/get-subscriber-info-from-spreedly/
    */
   def findAllSubscribers(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -95,7 +95,7 @@ class SpreedlyService {
   }
 
   /**
-   *  Reference : http://spreedly.com/manual/integration-reference/update-subscriber/
+   *  Reference : http://subs.pinpayments.com/manual/integration-reference/update-subscriber/
    */
   boolean updateSubscriber(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN, Map args) {
     def http = getRESTClient(siteName, authToken)
@@ -138,14 +138,14 @@ class SpreedlyService {
   *       <name>Example Plan</name>
   *       <needs-to-be-renewed type="boolean">true</needs-to-be-renewed>
   *       <plan-type>regular</plan-type>
-  *       <return-url>http://spreedly.com/sample-return</return-url>
+  *       <return-url>http://subs.pinpayments.com/sample-return</return-url>
   *       <updated-at type="datetime">2010-01-19T10:39:48Z</updated-at>
   *       <terms type="string">3 months</terms>
   *       <price type="decimal">24.0</price>
   *     </subscription-plan>
   *   </subscription-plans>
   *
-  *   Reference : http://spreedly.com/manual/integration-reference/programatically-pulling-subscription-plans/
+  *   Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-pulling-subscription-plans/
   */
 
   def findAllSubscriptionPlans(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
@@ -175,7 +175,7 @@ class SpreedlyService {
   }
 
   /**
-   *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-a-subscriber/
+   *   Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-comping-a-subscriber/
    */
   def giveComplimentarySubscription(long customerId, int quantity, String units, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -203,7 +203,7 @@ class SpreedlyService {
   }
 
   /**
-   *   Reference : http://spreedly.com/manual/integration-reference/programatically-comping-subscriber-time-extension/
+   *   Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-comping-subscriber-time-extension/
    */
   def giveComplimentaryTimeExtension(long customerId, int quantity, String units, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -230,7 +230,7 @@ class SpreedlyService {
   }
 
   /**
-   *   Reference : http://spreedly.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
+   *   Reference : http://subs.pinpayments.com/manual/integration-reference/adding-lifetime-comp-to-a-subscriber/
    */
   def giveLifetimeComplimentarySubscription(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -253,7 +253,7 @@ class SpreedlyService {
   }
 
   /**
-   * Reference : http://spreedly.com/manual/integration-reference/programatically-stop-auto-renew/
+   * Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-stop-auto-renew/
    */
   boolean stopAutoRenew(long customerId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -262,7 +262,7 @@ class SpreedlyService {
   }
 
   /**
-   *   Reference : http://spreedly.com/manual/integration-reference/programatically-subscribing-to-free-trial/
+   *   Reference : http://subs.pinpayments.com/manual/integration-reference/programatically-subscribing-to-free-trial/
    */
   def subscribeToFreeTrial(long customerId, long subscriptionId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -290,7 +290,7 @@ class SpreedlyService {
   /**
    *  Payment API
    *
-   *   Reference : http://spreedly.com/manual/integration-reference/payments-api/create-invoice/
+   *   Reference : http://subs.pinpayments.com/manual/integration-reference/payments-api/create-invoice/
    */
   def createInvoice(long subscriptionId, long customerId, String screenName = '', String _email = '', String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)
@@ -327,7 +327,7 @@ class SpreedlyService {
   /**
    *  Payment API
    *
-   *  Reference : http://spreedly.com/manual/integration-reference/payments-api/pay-invoice/
+   *  Reference : http://subs.pinpayments.com/manual/integration-reference/payments-api/pay-invoice/
    */
   def payInvoice(String invoiceToken, String cardNumber, String cardType, String verificationValue,
                  String _month, String _year, String firstName, String lastName, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
@@ -363,8 +363,8 @@ class SpreedlyService {
 
   /**
    * Adding Store Credit to a Subscriber
-   * http://www.spreedly.com/manual/integration-reference/adding-store-credit-to-a-subscriber
-   * 
+   * http://www.subs.pinpayments.com/manual/integration-reference/adding-store-credit-to-a-subscriber
+   *
    */
   boolean addStoreCredit(long customerId, String _amount, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
     def http = getRESTClient(siteName, authToken)

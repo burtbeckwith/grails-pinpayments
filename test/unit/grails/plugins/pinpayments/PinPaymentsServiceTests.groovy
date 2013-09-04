@@ -1,13 +1,13 @@
-package grails.plugins.spreedly
+package grails.plugins.pinpayments
 
 import grails.test.*
 import groovy.xml.StreamingMarkupBuilder
 
-class SpreedlyServiceTests extends GrailsUnitTestCase {
+class PinPaymentsServiceTests extends GrailsUnitTestCase {
 
   void setUp() {
     super.setUp()
-    mockLogging(SpreedlyService, true)
+    mockLogging(PinPaymentsService, true)
     mockConfig('''
 spreedly.siteName = 'grails-spreedly-test'
 spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
@@ -15,36 +15,36 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void tearDown() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     service.deleteAllSubscribers()
   }
 
   void testConfigOk() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     assertNotNull service.SITE_NAME
     assertNotNull service.AUTH_TOKEN
   }
 
   void testFindAllSubscriptionPlans() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     def plans = service.findAllSubscriptionPlans()
     assertNotNull plans
   }
 
   void testFindSubscriptionPlan() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     def plan = service.findSubscriptionPlan(3765)
     assertNotNull plan
   }
 
   void testFindSubscriptionPlanByName() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     def plan = service.findSubscriptionPlanByName('Example Plan')
     assertNotNull plan
   }
 
   void testDeleteAllSubscribers() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     assertTrue service.deleteAllSubscribers()
   }
 
@@ -69,7 +69,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testCreateSubscriber() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId)
     assertNotNull subscriber
@@ -77,14 +77,14 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testDeleteSubscriber() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertTrue service.deleteSubscriber(customerId)
   }
 
   void testFindAllSubscribers() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     service.createSubscriber(customerId + 1, 'danny@rabbit.com', 'danny')
@@ -94,7 +94,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testFindSubscriber() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     def subscriber = service.findSubscriber(customerId)
@@ -104,7 +104,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testGiveComplimentarySubscription() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertFalse subscriber.active.text().toBoolean()
@@ -114,7 +114,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testUpdateSubscriber() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def _subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertFalse _subscriber.active.text().toBoolean()
@@ -122,7 +122,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testGiveLifetimeComplimentarySubscription() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     subscriber = service.giveLifetimeComplimentarySubscription(customerId)
@@ -131,14 +131,14 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testStopAutoRenew() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertTrue service.stopAutoRenew(customerId)
   }
 
   void testSubscribeToFreeTrial() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     subscriber = service.subscribeToFreeTrial(customerId, 3804)
@@ -146,7 +146,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testUnknownSubscriberSubscribeToFreeTrial() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def result = shouldFail(Exception.class) {
       service.subscribeToFreeTrial(customerId, 3804)
@@ -155,7 +155,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testCreateInvoice() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     def invoice = service.createInvoice(3765, customerId)
@@ -163,7 +163,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testPayInvoice() {
-    def service = new SpreedlyService()
+    def service = new PinPaymentsService()
     long customerId = new Date().time
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertNotNull subscriber
@@ -180,7 +180,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 
 //
 //    void testGiveComplimentaryTimeExtension() {
-//        def service = new SpreedlyService()
+//        def service = new PinPaymentsService()
 //        long customerId = new Date().time
 //        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
 //        assertFalse subscriber.active.text().toBoolean()
