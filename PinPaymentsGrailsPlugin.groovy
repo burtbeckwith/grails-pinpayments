@@ -1,6 +1,6 @@
 class SpreedlyGrailsPlugin {
     // the plugin version
-    def version = "0.1.7"
+    def version = "0.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2.0 > *"
     // the other plugins this plugin depends on
@@ -13,17 +13,17 @@ class SpreedlyGrailsPlugin {
     // TODO Fill in these fields
     def author = "Luis Arias"
     def authorEmail = "luis@balsamiq.com"
-    def title = "Spreedly payment service integration for Grails."
+    def title = "Pin Payments integration for Grails."
     def description = '''\\
-The Grails Spreedly plugin provides an easy way to access the Spreedly v4 API.class
+The Grails Pin Payments plugin provides an easy way to access the Pin Payments v4 API
 
-More information on the Spreedly payment service can be found on:
+More information on the Pin Payments service can be found on:
 
-http://www.spreedly.com
+http://www.pinpayments.com
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/spreedly"
+    def documentation = "http://grails.org/plugin/pinpayments"
 
   // Extra (optional) plugin metadata
 

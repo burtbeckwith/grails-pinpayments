@@ -14,7 +14,6 @@ grails.project.dependency.resolution = {
   repositories {
     grailsCentral()
     mavenCentral()
-    mavenRepo "http://repository.codehaus.org"
   }
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -36,7 +35,7 @@ grails.project.dependency.resolution = {
     }
   }
   plugins {
-    build(":release:2.2.0") {
+    build(":release:3.0.0") {
       export = false
     }
   }
