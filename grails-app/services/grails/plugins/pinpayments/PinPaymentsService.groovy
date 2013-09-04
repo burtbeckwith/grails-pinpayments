@@ -363,7 +363,7 @@ class PinPaymentsService {
 
   /**
    * Adding Store Credit to a Subscriber
-   * http://www.subs.pinpayments.com/manual/integration-reference/adding-store-credit-to-a-subscriber
+   * http://subs.pinpayments.com/manual/integration-reference/adding-store-credit-to-a-subscriber
    *
    */
   boolean addStoreCredit(long customerId, String _amount, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
@@ -385,5 +385,34 @@ class PinPaymentsService {
         }
     )
     resp.status == 201
+  }
+
+  /**
+   * Finds last 50 Transactions
+   * http://subs.pinpayments.com/manual/integration-reference/show-transactions
+   *
+   */
+  def findLastTransactions(String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
+    def resp = http.get(
+        path:'transactions.xml',
+        requestContentType: XML
+    )
+    resp.data
+  }
+
+  /**
+   * Finds next 50 Transactions with id greater than transactionId
+   * http://subs.pinpayments.com/manual/integration-reference/show-transactions
+   *
+   */
+  def findTransactionsSince(long transactionId, String siteName = SITE_NAME, String authToken = AUTH_TOKEN) {
+    def http = getRESTClient(siteName, authToken)
+    def resp = http.get(
+        path:'transactions.xml',
+        query : [since_id : transactionId],
+        requestContentType: XML
+    )
+    resp.data
   }
 }

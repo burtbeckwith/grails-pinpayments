@@ -188,4 +188,34 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 //        assertNotNull subscriber
 //        assertTrue subscriber.active.text().toBoolean()
 //    }
+
+  void testFindLastTransactions() {
+    def service = new PinPaymentsService()
+    long customerId = new Date().time
+    def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
+    subscriber = service.subscribeToFreeTrial(customerId, 3804)
+    def transactions = service.findLastTransactions()
+    assertFalse transactions.isEmpty()
+    assertFalse transactions.transaction.isEmpty()
+    assertEquals transactions.transaction.size(), 1
+    assertEquals transactions.transaction.getAt(0)."subscriber-customer-id".text().toLong(), customerId
+  }
+
+  def testFindTransactionsSince() {
+    def service = new PinPaymentsService()
+    long customerId = new Date().time
+    def subscriber = service.createSubscriber(customerId, 'jessica@rabbit.com', 'jessica')
+    subscriber = service.subscribeToFreeTrial(customerId, 3804)
+    long customerId2 = new Date().time
+    def subscriber2 = service.createSubscriber(customerId2, 'roger@rabbit.com', 'roger')
+    subscriber2 = service.subscribeToFreeTrial(customerId2, 3804)
+    def transactions = service.findLastTransactions()
+    assertEquals transactions.transaction.size(), 2
+    long lastId = transactions.transaction.getAt(1).id.text().toLong()
+    transactions = service.findTransactionsSince(lastId)
+    assertFalse transactions.isEmpty()
+    assertFalse transactions.transaction.isEmpty()
+    assertEquals transactions.transaction.size(), 1
+    assertEquals transactions.transaction.getAt(0)."subscriber-customer-id".text().toLong(), customerId2
+  }
 }
