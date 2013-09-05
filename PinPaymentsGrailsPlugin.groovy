@@ -1,4 +1,4 @@
-class SpreedlyGrailsPlugin {
+class PinPaymentsGrailsPlugin {
     // the plugin version
     def version = "0.2"
     // the version or versions of Grails the plugin is designed for
