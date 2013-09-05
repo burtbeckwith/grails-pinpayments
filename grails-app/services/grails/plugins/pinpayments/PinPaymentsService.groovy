@@ -1,18 +1,21 @@
 package grails.plugins.pinpayments
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-import groovyx.net.http.RESTClient
 import static groovyx.net.http.ContentType.TEXT
 import static groovyx.net.http.ContentType.XML
-import org.apache.http.params.HttpParams
+import groovyx.net.http.RESTClient
+
 import org.apache.http.params.HttpConnectionParams
+import org.apache.http.params.HttpParams
+import org.springframework.beans.factory.InitializingBean
 
-class PinPaymentsService {
+class PinPaymentsService implements InitializingBean {
 
-  boolean transactional = false
+  static transactional = false
 
-  String SITE_NAME = CH.config.spreedly?.siteName ?: 'yourSiteName'
-  String AUTH_TOKEN = CH.config.spreedly?.authToken ?: 'yourAuthToken'
+  def grailsApplication
+
+  String SITE_NAME
+  String AUTH_TOKEN
 
   private RESTClient getRESTClient(String siteName, String authToken) {
     def http = new RESTClient("https://subs.pinpayments.com/api/v4/${siteName}/")
@@ -414,5 +417,11 @@ class PinPaymentsService {
         requestContentType: XML
     )
     resp.data
+  }
+
+  void afterPropertiesSet() {
+    def spreedly = grailsApplication.config.spreedly
+    SITE_NAME = spreedly.siteName ?: 'yourSiteName'
+    AUTH_TOKEN = spreedly.authToken ?: 'yourAuthToken'
   }
 }

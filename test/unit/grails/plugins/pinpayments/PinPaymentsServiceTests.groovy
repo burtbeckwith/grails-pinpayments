@@ -1,55 +1,56 @@
 package grails.plugins.pinpayments
 
-import grails.test.*
+import grails.test.GrailsUnitTestCase
 import groovy.xml.StreamingMarkupBuilder
+
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 
 class PinPaymentsServiceTests extends GrailsUnitTestCase {
 
-  void setUp() {
+  private PinPaymentsService service = new PinPaymentsService()
+
+  protected void setUp() {
     super.setUp()
     mockLogging(PinPaymentsService, true)
-    mockConfig('''
+    def config = mockConfig('''
 spreedly.siteName = 'grails-spreedly-test'
 spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 ''')
+    service.grailsApplication = new DefaultGrailsApplication()
+    service.grailsApplication.config = config
+    service.afterPropertiesSet()
   }
 
-  void tearDown() {
-    def service = new PinPaymentsService()
+  protected void tearDown() {
     service.deleteAllSubscribers()
   }
 
   void testConfigOk() {
-    def service = new PinPaymentsService()
     assertNotNull service.SITE_NAME
     assertNotNull service.AUTH_TOKEN
   }
 
   void testFindAllSubscriptionPlans() {
-    def service = new PinPaymentsService()
     def plans = service.findAllSubscriptionPlans()
     assertNotNull plans
   }
 
   void testFindSubscriptionPlan() {
-    def service = new PinPaymentsService()
     def plan = service.findSubscriptionPlan(3765)
     assertNotNull plan
   }
 
   void testFindSubscriptionPlanByName() {
-    def service = new PinPaymentsService()
     def plan = service.findSubscriptionPlanByName('Example Plan')
     assertNotNull plan
   }
 
   void testDeleteAllSubscribers() {
-    def service = new PinPaymentsService()
     assertTrue service.deleteAllSubscribers()
   }
 
   void testCreateSubscriberXML() {
-    def _customerId = new Date().time
+    def _customerId = System.currentTimeMillis()
     def _screenName = 'roger'
     def _email = 'roger@rabbit.com'
     def xml = new StreamingMarkupBuilder().bind {
@@ -65,27 +66,25 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
     }.toString()
     assertNotNull xml
     println xml
-    assertEquals "<subscriber><customer-id>${_customerId}</customer-id><screen-name>${_screenName}</screen-name><email>${_email}</email></subscriber>", xml
+    String expected = "<subscriber><customer-id>${_customerId}</customer-id><screen-name>${_screenName}</screen-name><email>${_email}</email></subscriber>"
+    assertEquals expected, xml
   }
 
   void testCreateSubscriber() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId)
     assertNotNull subscriber
     assertEquals customerId, subscriber.'customer-id'.text().toLong()
   }
 
   void testDeleteSubscriber() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertTrue service.deleteSubscriber(customerId)
   }
 
   void testFindAllSubscribers() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     service.createSubscriber(customerId + 1, 'danny@rabbit.com', 'danny')
     def subscribers = service.findAllSubscribers()
@@ -94,8 +93,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testFindSubscriber() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     def subscriber = service.findSubscriber(customerId)
     assertNotNull subscriber
@@ -104,8 +102,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testGiveComplimentarySubscription() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertFalse subscriber.active.text().toBoolean()
     subscriber = service.giveComplimentarySubscription(customerId, 2, 'months')
@@ -114,16 +111,14 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testUpdateSubscriber() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def _subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertFalse _subscriber.active.text().toBoolean()
     assertTrue service.updateSubscriber(customerId, ['screen-name': 'joe'])
   }
 
   void testGiveLifetimeComplimentarySubscription() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     subscriber = service.giveLifetimeComplimentarySubscription(customerId)
     assertNotNull subscriber
@@ -131,40 +126,35 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   void testStopAutoRenew() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertTrue service.stopAutoRenew(customerId)
   }
 
   void testSubscribeToFreeTrial() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     subscriber = service.subscribeToFreeTrial(customerId, 3804)
     assertTrue subscriber.'on-trial'.text().toBoolean()
   }
 
   void testUnknownSubscriberSubscribeToFreeTrial() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
-    def result = shouldFail(Exception.class) {
+    long customerId = System.currentTimeMillis()
+    def result = shouldFail(Exception) {
       service.subscribeToFreeTrial(customerId, 3804)
     }
     assertEquals 'Unknown subscriber', result
   }
 
   void testCreateInvoice() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     def invoice = service.createInvoice(3765, customerId)
     assertNotNull invoice
   }
 
   void testPayInvoice() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     assertNotNull subscriber
     def invoice = service.createInvoice(3765, customerId)
@@ -180,8 +170,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 
 //
 //    void testGiveComplimentaryTimeExtension() {
-//        def service = new PinPaymentsService()
-//        long customerId = new Date().time
+//        long customerId = System.currentTimeMillis()
 //        def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
 //        assertFalse subscriber.active.text().toBoolean()
 //        subscriber = service.giveComplimentaryTimeExtension(customerId, 20, 'days')
@@ -190,8 +179,7 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
 //    }
 
   void testFindLastTransactions() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'roger@rabbit.com', 'roger')
     subscriber = service.subscribeToFreeTrial(customerId, 3804)
     def transactions = service.findLastTransactions()
@@ -202,11 +190,10 @@ spreedly.authToken = 'cefb1ace9595fb30d7e82777d64800ba9ad70cb5'
   }
 
   def testFindTransactionsSince() {
-    def service = new PinPaymentsService()
-    long customerId = new Date().time
+    long customerId = System.currentTimeMillis()
     def subscriber = service.createSubscriber(customerId, 'jessica@rabbit.com', 'jessica')
     subscriber = service.subscribeToFreeTrial(customerId, 3804)
-    long customerId2 = new Date().time
+    long customerId2 = System.currentTimeMillis()
     def subscriber2 = service.createSubscriber(customerId2, 'roger@rabbit.com', 'roger')
     subscriber2 = service.subscribeToFreeTrial(customerId2, 3804)
     def transactions = service.findLastTransactions()
